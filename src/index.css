@@ -1,0 +1,42 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-primary: 5 122 85; /* Emerald 700 */
+    --color-primary-light: 16 185 129; /* Emerald 500 */
+    --color-accent: 243 156 18; /* #F39C12 */
+    --color-success: 39 174 96; /* #27AE60 */
+    --color-warning: 241 196 15; /* #F1C40F */
+    --color-danger: 231 76 60; /* #E74C3C */
+    --color-bg: 245 247 250; /* #F5F7FA */
+    --color-surface: 255 255 255; /* #FFFFFF */
+    --color-text: 26 26 46; /* #1A1A2E */
+    --color-text-muted: 127 140 141; /* #7F8C8D */
+    --color-border: 232 236 240; /* #E8ECF0 */
+    --sidebar-width: 260px;
+  }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    @apply bg-[rgb(var(--color-bg))] text-[rgb(var(--color-text))] antialiased selection:bg-emerald-100;
+  }
+
+  [dir="rtl"] {
+    font-family: 'Noto Sans Arabic', sans-serif;
+  }
+}
+
+@layer components {
+  .status-badge-pending {
+    @apply bg-yellow-100 text-yellow-800 border border-yellow-200;
+  }
+  .status-badge-approved {
+    @apply bg-green-100 text-green-800 border border-green-200;
+  }
+  .status-badge-rejected {
+    @apply bg-red-100 text-red-800 border border-red-200;
+  }
+}
