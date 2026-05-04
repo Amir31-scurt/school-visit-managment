@@ -15,11 +15,12 @@ export const RequestForm = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const { register, handleSubmit, reset, clearErrors, formState: { errors } } = useForm();
 
   useEffect(() => {
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  }, [lang]);
+    clearErrors();
+  }, [lang, clearErrors]);
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
@@ -76,14 +77,14 @@ export const RequestForm = () => {
             <Input
               label={t('form.schoolName' as any) as string}
               {...register('schoolName', { 
-                required: 'School Name is required',
-                minLength: { value: 3, message: 'Must be at least 3 characters' }
+                required: t('form.error.schoolRequired' as any) as string,
+                minLength: { value: 3, message: t('form.error.tooShort' as any) as string }
               })}
               error={errors.schoolName?.message as string}
             />
             <Input
               label={t('form.contactPerson' as any) as string}
-              {...register('contactPerson', { required: 'Contact Person is required' })}
+              {...register('contactPerson', { required: t('form.error.contactRequired' as any) as string })}
               error={errors.contactPerson?.message as string}
             />
           </div>
@@ -93,9 +94,9 @@ export const RequestForm = () => {
               label={t('form.phone' as any) as string}
               type="tel"
               {...register('phone', { 
-                required: 'Phone Number is required',
-                pattern: { value: /^[0-9+\-\s()]+$/, message: 'Invalid phone number format' },
-                minLength: { value: 8, message: 'Phone number too short' } 
+                required: t('form.error.phoneRequired' as any) as string,
+                pattern: { value: /^[0-9+\-\s()]+$/, message: t('form.error.invalidPhone' as any) as string },
+                minLength: { value: 8, message: t('form.error.tooShort' as any) as string } 
               })}
               error={errors.phone?.message as string}
             />
@@ -103,7 +104,7 @@ export const RequestForm = () => {
               label={t('form.email' as any) as string}
               type="email"
               {...register('email', {
-                pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: 'Invalid email address' }
+                pattern: { value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: t('form.error.invalidEmail' as any) as string }
               })}
               error={errors.email?.message as string}
             />
@@ -114,8 +115,8 @@ export const RequestForm = () => {
               label={t('form.numberOfStudents' as any) as string}
               type="number"
               {...register('numberOfStudents', { 
-                required: 'Number of Students is required', 
-                min: { value: 1, message: 'At least 1 student is required' },
+                required: t('form.error.required' as any) as string, 
+                min: { value: 1, message: t('form.error.minStudents' as any) as string },
                 valueAsNumber: true
               })}
               error={errors.numberOfStudents?.message as string}
@@ -123,7 +124,7 @@ export const RequestForm = () => {
             <Input
               label={t('form.preferredDate' as any) as string}
               type="date"
-              {...register('preferredDate', { required: 'Preferred Date is required' })}
+              {...register('preferredDate', { required: t('form.error.dateRequired' as any) as string })}
               error={errors.preferredDate?.message as string}
             />
             <Input

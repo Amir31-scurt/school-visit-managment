@@ -39,4 +39,11 @@
   .status-badge-rejected {
     @apply bg-red-100 text-red-800 border border-red-200;
   }
+
+  /* Date/Time picker indicator styling */
+  input[type="date"]::-webkit-calendar-picker-indicator,
+  input[type="time"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.4);
+  }
 }
