@@ -24,9 +24,28 @@ export const RequestForm = () => {
 
   const onSubmit = async (data: any) => {
     setIsSubmitting(true);
+    // Format phone: remove spaces/dashes, handle Senegal local vs International
+    let formattedPhone = data.phone.replace(/[\s\-\(\)]/g, '');
+    
+    if (!formattedPhone.startsWith('+')) {
+      if (formattedPhone.startsWith('00')) {
+        // Convert 00 to +
+        formattedPhone = '+' + formattedPhone.slice(2);
+      } else if (formattedPhone.startsWith('221') && formattedPhone.length === 12) {
+        // Already has 221 but no +
+        formattedPhone = '+' + formattedPhone;
+      } else if (formattedPhone.length === 9 && (formattedPhone.startsWith('7') || formattedPhone.startsWith('3'))) {
+        // Local Senegal number (9 digits starting with 7 or 3)
+        formattedPhone = '+221' + formattedPhone;
+      }
+      // Note: Other international numbers without + or 00 might not be auto-prefixed, 
+      // but we allow them to avoid blocking valid inputs.
+    }
+
     try {
       await submitPublicRequest({
         ...data,
+        phone: formattedPhone,
         numberOfStudents: Number(data.numberOfStudents),
         preferredDate: new Date(data.preferredDate),
       });
@@ -93,10 +112,13 @@ export const RequestForm = () => {
             <Input
               label={t('form.phone' as any) as string}
               type="tel"
+              placeholder="+221 77 000 00 00"
               {...register('phone', { 
                 required: t('form.error.phoneRequired' as any) as string,
-                pattern: { value: /^[0-9+\-\s()]+$/, message: t('form.error.invalidPhone' as any) as string },
-                minLength: { value: 8, message: t('form.error.tooShort' as any) as string } 
+                pattern: { 
+                  value: /^[0-9+\-\s()]{8,}$/, 
+                  message: t('form.error.invalidPhone' as any) as string 
+                },
               })}
               error={errors.phone?.message as string}
             />
@@ -138,9 +160,10 @@ export const RequestForm = () => {
             label={t('form.communicationLanguage' as any) as string}
             {...register('communicationLanguage')}
             options={[
-              { value: 'en', label: 'English' },
               { value: 'fr', label: 'Français' },
+              { value: 'en', label: 'English' },
               { value: 'ar', label: 'العربية' },
+              { value: 'wo', label: 'Wolof' },
             ]}
           />
 

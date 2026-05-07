@@ -48,8 +48,8 @@ export const submitPublicRequest = async (data: any) => {
   });
 };
 
-export const approveRequest = async (id: string, confirmedDate: any, confirmedTime: string, internalNotes: string, adminUid: string) => {
-  return await updateDoc(doc(db, 'requests', id), {
+export const approveRequest = async (id: string, confirmedDate: any, confirmedTime: string, internalNotes: string, adminUid: string, numberOfStudents?: number) => {
+  const updateData: any = {
     status: 'approved',
     confirmedDate,
     confirmedTime,
@@ -57,7 +57,13 @@ export const approveRequest = async (id: string, confirmedDate: any, confirmedTi
     approvedBy: adminUid,
     approvedAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
-  });
+  };
+  
+  if (numberOfStudents !== undefined) {
+    updateData.numberOfStudents = numberOfStudents;
+  }
+
+  return await updateDoc(doc(db, 'requests', id), updateData);
 };
 
 export const rejectRequest = async (id: string, reason: string, adminUid: string) => {

@@ -30,7 +30,8 @@ export const ApproveModal = ({ isOpen, onClose, request }: Props) => {
   const { t } = useTranslation();
   const { formatDate } = useDateFormat();
   const [selectedDate, setSelectedDate] = useState<string>('');
-  const [lang, setLang] = useState<'en' | 'fr' | 'ar'>('en');
+  const [lang, setLang] = useState<'en' | 'fr' | 'ar' | 'wo'>('en');
+  const [tariff, setTariff] = useState<'900' | '700'>('900');
   const [message, setMessage] = useState('');
   
   const { register, handleSubmit, reset, watch, setValue, formState: { errors } } = useForm();
@@ -50,6 +51,7 @@ export const ApproveModal = ({ isOpen, onClose, request }: Props) => {
         setValue('confirmedDate', d.toISOString().split('T')[0]);
       }
       setValue('confirmedTime', request.preferredTime || '');
+      setValue('numberOfStudents', request.numberOfStudents);
     }
   }, [request, setValue]);
 
@@ -61,12 +63,13 @@ export const ApproveModal = ({ isOpen, onClose, request }: Props) => {
         schoolName: request.schoolName,
         confirmedDate: dateStr ? dateFnsFormat(new Date(dateStr), 'PPP', { locale: dateLocales[lang] }) : '',
         confirmedTime: timeStr,
-        numberOfStudents: request.numberOfStudents,
-        preferredDate: request.preferredDate ? dateFnsFormat(request.preferredDate.toDate(), 'PPP', { locale: dateLocales[lang] }) : ''
+        numberOfStudents: watch('numberOfStudents') || request.numberOfStudents,
+        preferredDate: request.preferredDate ? dateFnsFormat(request.preferredDate.toDate(), 'PPP', { locale: dateLocales[lang as 'en' | 'fr' | 'ar'] || fr }) : '',
+        tariff: tariff
       });
       setMessage(filled);
     }
-  }, [lang, request, settings, dateStr, timeStr]);
+  }, [lang, request, settings, dateStr, timeStr, tariff, watch('numberOfStudents')]);
 
   if (!request) return null;
 
@@ -76,7 +79,7 @@ export const ApproveModal = ({ isOpen, onClose, request }: Props) => {
   const onSubmit = async (data: any, action: 'whatsapp' | 'email' | 'both' | 'just_approve') => {
     try {
       const confirmedDate = new Date(data.confirmedDate);
-      await approveRequest(request.id, confirmedDate, data.confirmedTime, data.internalNotes, user?.uid || '');
+      await approveRequest(request.id, confirmedDate, data.confirmedTime, data.internalNotes, user?.uid || '', Number(data.numberOfStudents));
       
       if (action === 'whatsapp' || action === 'both') {
         openWhatsApp(request.phone, message);
@@ -117,6 +120,31 @@ export const ApproveModal = ({ isOpen, onClose, request }: Props) => {
               error={errors.confirmedTime?.message as string} 
               disabled={request.status !== 'pending'}
             />
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <Input 
+              label={t('form.numberOfStudents' as any) as string} 
+              type="number" 
+              {...register('numberOfStudents', { required: 'Required', min: 1 })} 
+              error={errors.numberOfStudents?.message as string} 
+              disabled={request.status !== 'pending'}
+            />
+            <div className="flex flex-col">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tarif (FCFA)</label>
+              <div className="flex bg-gray-100 p-1 rounded-lg">
+                {(['900', '700'] as const).map(v => (
+                  <button
+                    key={v}
+                    type="button"
+                    onClick={() => setTariff(v)}
+                    className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all ${tariff === v ? 'bg-white shadow text-emerald-600' : 'text-gray-500'}`}
+                  >
+                    {v}
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
           
           {request.status === 'pending' && (
