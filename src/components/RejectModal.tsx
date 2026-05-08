@@ -6,7 +6,7 @@ import { useSettings } from '../hooks/useSettings';
 import { rejectRequest } from '../hooks/useRequests';
 import { useAuth } from '../hooks/useAuth';
 import { VisitRequest } from '../types';
-import { fillTemplate } from '../lib/messageTemplates';
+import { fillTemplate, defaultTemplates } from '../lib/messageTemplates';
 import { openWhatsApp } from '../lib/whatsapp';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../i18n';
@@ -40,7 +40,7 @@ export const RejectModal = ({ isOpen, onClose, request }: Props) => {
 
   useEffect(() => {
     if (request && settings) {
-      const tpl = settings.messageTemplates[lang]?.rejection || '';
+      const tpl = settings.messageTemplates[lang]?.rejection || defaultTemplates[lang].rejection;
       const filled = fillTemplate(tpl, {
         contactPerson: request.contactPerson,
         schoolName: request.schoolName,

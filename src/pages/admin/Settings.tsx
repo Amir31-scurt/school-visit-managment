@@ -4,6 +4,7 @@ import { useTranslation } from '../../i18n';
 import { Card } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
 import { Button } from '../../components/ui/Button';
+import { defaultTemplates } from '../../lib/messageTemplates';
 import toast from 'react-hot-toast';
 
 export const Settings = () => {
@@ -98,9 +99,21 @@ export const Settings = () => {
             />
           </div>
           <div className="bg-gray-50 p-4 rounded-lg border text-sm text-gray-600 font-mono" dir="ltr">
-            Variables: {`{{contactPerson}} {{schoolName}} {{confirmedDate}} {{confirmedTime}} {{numberOfStudents}} {{preferredDate}}`}
+            Variables: {`{{contactPerson}} {{schoolName}} {{confirmedDate}} {{confirmedTime}} {{numberOfStudents}} {{preferredDate}} {{tariff}}`}
           </div>
-          <Button onClick={handleSaveTemplates}>{t('admin.save' as any) as string}</Button>
+          <div className="flex gap-4">
+            <Button onClick={handleSaveTemplates}>{t('admin.save' as any) as string}</Button>
+            <Button 
+              variant="secondary" 
+              onClick={() => {
+                if (confirm('Reset to default templates? This will overwrite your current changes.')) {
+                  setTemplates(defaultTemplates);
+                }
+              }}
+            >
+              Reset to Defaults
+            </Button>
+          </div>
         </div>
       </Card>
     </div>

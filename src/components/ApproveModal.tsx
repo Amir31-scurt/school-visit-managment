@@ -8,7 +8,7 @@ import { useSettings } from '../hooks/useSettings';
 import { useRequestsByDate, approveRequest } from '../hooks/useRequests';
 import { useAuth } from '../hooks/useAuth';
 import { VisitRequest } from '../types';
-import { fillTemplate } from '../lib/messageTemplates';
+import { fillTemplate, defaultTemplates } from '../lib/messageTemplates';
 import { openWhatsApp, buildWhatsAppLink } from '../lib/whatsapp';
 import toast from 'react-hot-toast';
 import { useTranslation } from '../i18n';
@@ -57,7 +57,7 @@ export const ApproveModal = ({ isOpen, onClose, request }: Props) => {
 
   useEffect(() => {
     if (request && settings) {
-      const tpl = settings.messageTemplates[lang]?.confirmation || '';
+      const tpl = settings.messageTemplates[lang]?.confirmation || defaultTemplates[lang].confirmation;
       const filled = fillTemplate(tpl, {
         contactPerson: request.contactPerson,
         schoolName: request.schoolName,
