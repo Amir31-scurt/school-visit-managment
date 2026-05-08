@@ -13,7 +13,7 @@ import { useTranslation } from '../i18n';
 import { format as dateFnsFormat } from 'date-fns';
 import { enUS, fr, ar } from 'date-fns/locale';
 
-const dateLocales = { en: enUS, fr, ar };
+const dateLocales = { en: enUS, fr, ar, wo: fr };
 
 
 interface Props {
@@ -26,7 +26,7 @@ export const RejectModal = ({ isOpen, onClose, request }: Props) => {
   const { settings } = useSettings();
   const { user } = useAuth();
   const { t } = useTranslation();
-  const [lang, setLang] = useState<'en' | 'fr' | 'ar'>('en');
+  const [lang, setLang] = useState<'en' | 'fr' | 'ar' | 'wo'>('en');
   const [message, setMessage] = useState('');
   
   const { register, handleSubmit, reset, watch } = useForm();
@@ -89,7 +89,7 @@ export const RejectModal = ({ isOpen, onClose, request }: Props) => {
           <div className="border-t pt-4 mt-4">
             <h4 className="font-semibold mb-2">Message Preview</h4>
             <div className="flex gap-2 mb-2">
-              {(['en', 'fr', 'ar'] as const).map(l => (
+              {(['en', 'fr', 'ar', 'wo'] as const).map(l => (
                 <button
                   key={l}
                   type="button"

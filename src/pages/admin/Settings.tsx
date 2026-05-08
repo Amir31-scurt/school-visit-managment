@@ -10,8 +10,13 @@ export const Settings = () => {
   const { settings, loading, updateSettings } = useSettings();
   const { t } = useTranslation();
   const [capacity, setCapacity] = useState({ maxSchoolsPerDay: 3, maxStudentsPerDay: 150 });
-  const [langTab, setLangTab] = useState<'en' | 'fr' | 'ar'>('en');
-  const [templates, setTemplates] = useState({ en: { confirmation: '', rejection: '' }, fr: { confirmation: '', rejection: '' }, ar: { confirmation: '', rejection: '' } });
+  const [langTab, setLangTab] = useState<'en' | 'fr' | 'ar' | 'wo'>('en');
+  const [templates, setTemplates] = useState({ 
+    en: { confirmation: '', rejection: '' }, 
+    fr: { confirmation: '', rejection: '' }, 
+    ar: { confirmation: '', rejection: '' },
+    wo: { confirmation: '', rejection: '' } 
+  });
 
   useEffect(() => {
     if (settings) {
@@ -58,8 +63,8 @@ export const Settings = () => {
       <Card>
         <h2 className="text-xl font-semibold mb-4">{t('admin.messageTemplates' as any) as string}</h2>
         
-        <div className="flex border-b mb-6">
-          {(['en', 'fr', 'ar'] as const).map(l => (
+        <div className="flex border-b mb-6 overflow-x-auto">
+          {(['en', 'fr', 'ar', 'wo'] as const).map(l => (
             <button
               key={l}
               onClick={() => setLangTab(l)}
@@ -67,7 +72,7 @@ export const Settings = () => {
                 langTab === l ? 'border-emerald-600 text-emerald-600' : 'border-transparent text-gray-500 hover:text-gray-700'
               }`}
             >
-              {l === 'en' ? 'English' : l === 'fr' ? 'Français' : 'العربية'}
+              {l === 'en' ? 'English' : l === 'fr' ? 'Français' : l === 'wo' ? 'Wolof' : 'العربية'}
             </button>
           ))}
         </div>

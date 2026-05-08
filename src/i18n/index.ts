@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 import { en } from './en';
-import { fr } from './fr';
 import { ar } from './ar';
+import { wo } from './wo';
 import { Lang } from '../types';
+import { fr } from './fr';
 
-const translations = { en, fr, ar };
+const translations = { en, fr, ar, wo };
 
 interface I18nStore {
   lang: Lang;

@@ -16,7 +16,7 @@ import { useDateFormat } from '../hooks/useDateFormat';
 import { format as dateFnsFormat } from 'date-fns';
 import { enUS, fr, ar } from 'date-fns/locale';
 
-const dateLocales = { en: enUS, fr, ar };
+const dateLocales = { en: enUS, fr, ar, wo: fr };
 
 interface Props {
   isOpen: boolean;
