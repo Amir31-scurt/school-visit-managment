@@ -16,7 +16,7 @@ import { useDateFormat } from '../hooks/useDateFormat';
 import { format as dateFnsFormat } from 'date-fns';
 import { enUS, fr, ar } from 'date-fns/locale';
 
-const dateLocales = { en: enUS, fr, ar, wo: fr };
+const dateLocales = { en: enUS, fr, ar };
 
 interface Props {
   isOpen: boolean;
@@ -30,7 +30,7 @@ export const ApproveModal = ({ isOpen, onClose, request }: Props) => {
   const { t } = useTranslation();
   const { formatDate } = useDateFormat();
   const [selectedDate, setSelectedDate] = useState<string>('');
-  const [lang, setLang] = useState<'en' | 'fr' | 'ar' | 'wo'>('en');
+  const [lang, setLang] = useState<'en' | 'fr' | 'ar'>('en');
   const [tariff, setTariff] = useState<'900' | '700'>('900');
   const [message, setMessage] = useState('');
   
@@ -64,7 +64,7 @@ export const ApproveModal = ({ isOpen, onClose, request }: Props) => {
         confirmedDate: dateStr ? dateFnsFormat(new Date(dateStr), 'PPP', { locale: dateLocales[lang] }) : '',
         confirmedTime: timeStr,
         numberOfStudents: watch('numberOfStudents') || request.numberOfStudents,
-        preferredDate: request.preferredDate ? dateFnsFormat(request.preferredDate.toDate(), 'PPP', { locale: dateLocales[lang as 'en' | 'fr' | 'ar'] || fr }) : '',
+        preferredDate: request.preferredDate ? dateFnsFormat(request.preferredDate.toDate(), 'PPP', { locale: dateLocales[lang] }) : '',
         tariff: tariff
       });
       setMessage(filled);

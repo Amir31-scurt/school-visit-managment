@@ -163,7 +163,7 @@ export const RequestForm = () => {
               { value: 'fr', label: 'Français' },
               { value: 'en', label: 'English' },
               { value: 'ar', label: 'العربية' },
-              { value: 'wo', label: 'Wolof' },
+              { value: 'fr', label: 'Wolof' },
             ]}
           />
 

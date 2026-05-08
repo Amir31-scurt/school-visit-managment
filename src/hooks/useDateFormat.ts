@@ -5,8 +5,7 @@ import { useTranslation } from '../i18n';
 const locales = {
   en: enUS,
   fr: fr,
-  ar: ar,
-  wo: fr
+  ar: ar
 };
 
 export const useDateFormat = () => {

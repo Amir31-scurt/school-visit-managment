@@ -1,4 +1,4 @@
-export type Lang = 'en' | 'fr' | 'ar' | 'wo';
+export type Lang = 'en' | 'fr' | 'ar';
 export type RequestStatus = 'pending' | 'approved' | 'rejected';
 export type RequestSource = 'public_form' | 'admin_created';
 
@@ -36,7 +36,6 @@ export interface AppSettings {
     en: { confirmation: string; rejection: string; };
     fr: { confirmation: string; rejection: string; };
     ar: { confirmation: string; rejection: string; };
-    wo: { confirmation: string; rejection: string; };
   };
   updatedAt: any;
 }
