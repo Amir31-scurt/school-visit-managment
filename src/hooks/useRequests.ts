@@ -1,56 +1,151 @@
-import { useState, useEffect } from 'react';
-import { collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, doc, serverTimestamp, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
-import { VisitRequest, RequestStatus } from '../types';
-import { startOfDay, endOfDay, addDays, isSameDay } from 'date-fns';
+import {useState, useEffect} from "react";
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  addDoc,
+  updateDoc,
+  doc,
+  serverTimestamp,
+  getDocs,
+} from "firebase/firestore";
+import {db} from "../firebase";
+import {VisitRequest, RequestStatus} from "../types";
+import {startOfDay, endOfDay, addDays, isSameDay} from "date-fns";
 
-export function useRequests(filters?: { status?: string; searchQuery?: string }) {
+export function useRequests(filters?: {
+  status?: string;
+  searchQuery?: string;
+  contactName?: string;
+  preferredDate?: Date | null;
+  sortBy?: "createdAt" | "date";
+}) {
   const [requests, setRequests] = useState<VisitRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
     // Query with single orderBy avoids composite index issues but prevents cache corruption
-    const q = query(collection(db, 'requests'), orderBy('createdAt', 'desc'));
+    const q = query(collection(db, "requests"), orderBy("createdAt", "desc"));
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      let data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as VisitRequest));
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        let data = snapshot.docs.map(
+          (doc) => ({id: doc.id, ...doc.data()}) as VisitRequest,
+        );
 
-      // Filter status in memory
-      if (filters?.status && filters.status !== 'all') {
-        data = data.filter(r => r.status === filters.status);
-      }
+        // Filter status in memory
+        if (filters?.status && filters.status !== "all") {
+          data = data.filter((r) => r.status === filters.status);
+        }
 
-      if (filters?.searchQuery) {
-        const qStr = filters.searchQuery.toLowerCase();
-        data = data.filter(r => r.schoolName.toLowerCase().includes(qStr));
-      }
-      setRequests(data);
-      setLoading(false);
-    }, (err) => {
-      setError(err);
-      setLoading(false);
-    });
+        // Filter by school name search
+        if (filters?.searchQuery) {
+          const qStr = filters.searchQuery.toLowerCase();
+          data = data.filter((r) => r.schoolName.toLowerCase().includes(qStr));
+        }
+
+        // Filter by contact person name
+        if (filters?.contactName) {
+          const qStr = filters.contactName.toLowerCase();
+          data = data.filter((r) =>
+            (r.contactPerson || "").toLowerCase().includes(qStr),
+          );
+        }
+
+        // Filter by preferred/confirmed date (day match)
+        if (filters?.preferredDate) {
+          const start = startOfDay(filters.preferredDate);
+          const end = endOfDay(filters.preferredDate);
+          data = data.filter((r) => {
+            const d = r.preferredDate
+              ? r.preferredDate.toDate()
+              : r.confirmedDate
+                ? r.confirmedDate.toDate()
+                : null;
+            if (!d) return false;
+            return d >= start && d <= end;
+          });
+        }
+
+        // Sorting: put pending items first, then by requested sort
+        const getDateValue = (r: VisitRequest) => {
+          const d = r.confirmedDate
+            ? r.confirmedDate.toDate()
+            : r.preferredDate
+              ? r.preferredDate.toDate()
+              : null;
+          return d ? d.getTime() : 0;
+        };
+
+        if (filters?.sortBy === "date") {
+          data.sort((a, b) => {
+            // pending on top
+            if (a.status === "pending" && b.status !== "pending") return -1;
+            if (b.status === "pending" && a.status !== "pending") return 1;
+            return getDateValue(b) - getDateValue(a);
+          });
+        } else {
+          // default: createdAt desc but pending on top
+          data.sort((a, b) => {
+            if (a.status === "pending" && b.status !== "pending") return -1;
+            if (b.status === "pending" && a.status !== "pending") return 1;
+            const aa =
+              a.createdAt && typeof a.createdAt.toDate === "function"
+                ? a.createdAt.toDate().getTime()
+                : 0;
+            const bb =
+              b.createdAt && typeof b.createdAt.toDate === "function"
+                ? b.createdAt.toDate().getTime()
+                : 0;
+            return bb - aa;
+          });
+        }
+
+        setRequests(data);
+        setLoading(false);
+      },
+      (err) => {
+        setError(err);
+        setLoading(false);
+      },
+    );
 
     return () => unsubscribe();
-  }, [filters?.status, filters?.searchQuery]);
+  }, [
+    filters?.status,
+    filters?.searchQuery,
+    filters?.contactName,
+    filters?.preferredDate ? filters.preferredDate.getTime() : null,
+    filters?.sortBy,
+  ]);
 
-  return { requests, loading, error };
+  return {requests, loading, error};
 }
 
 export const submitPublicRequest = async (data: any) => {
-  return await addDoc(collection(db, 'requests'), {
+  return await addDoc(collection(db, "requests"), {
     ...data,
-    status: 'pending',
-    source: 'public_form',
+    status: "pending",
+    source: "public_form",
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   });
 };
 
-export const approveRequest = async (id: string, confirmedDate: any, confirmedTime: string, internalNotes: string, adminUid: string, numberOfStudents?: number) => {
+export const approveRequest = async (
+  id: string,
+  confirmedDate: any,
+  confirmedTime: string,
+  internalNotes: string,
+  adminUid: string,
+  numberOfStudents?: number,
+) => {
   const updateData: any = {
-    status: 'approved',
+    status: "approved",
     confirmedDate,
     confirmedTime,
     internalNotes,
@@ -58,17 +153,21 @@ export const approveRequest = async (id: string, confirmedDate: any, confirmedTi
     approvedAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   };
-  
+
   if (numberOfStudents !== undefined) {
     updateData.numberOfStudents = numberOfStudents;
   }
 
-  return await updateDoc(doc(db, 'requests', id), updateData);
+  return await updateDoc(doc(db, "requests", id), updateData);
 };
 
-export const rejectRequest = async (id: string, reason: string, adminUid: string) => {
-  return await updateDoc(doc(db, 'requests', id), {
-    status: 'rejected',
+export const rejectRequest = async (
+  id: string,
+  reason: string,
+  adminUid: string,
+) => {
+  return await updateDoc(doc(db, "requests", id), {
+    status: "rejected",
     rejectionReason: reason,
     rejectedBy: adminUid,
     rejectedAt: serverTimestamp(),
@@ -78,16 +177,20 @@ export const rejectRequest = async (id: string, reason: string, adminUid: string
 
 export function useRequestsByDate(date: Date) {
   const [requests, setRequests] = useState<VisitRequest[]>([]);
-  
+
   useEffect(() => {
     const q = query(
-      collection(db, 'requests'),
-      where('status', '==', 'approved'),
-      where('confirmedDate', '>=', startOfDay(date)),
-      where('confirmedDate', '<=', endOfDay(date))
+      collection(db, "requests"),
+      where("status", "==", "approved"),
+      where("confirmedDate", ">=", startOfDay(date)),
+      where("confirmedDate", "<=", endOfDay(date)),
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      setRequests(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as VisitRequest)));
+      setRequests(
+        snapshot.docs.map(
+          (doc) => ({id: doc.id, ...doc.data()}) as VisitRequest,
+        ),
+      );
     });
     return () => unsubscribe();
   }, [date.getTime()]);
@@ -96,11 +199,19 @@ export function useRequestsByDate(date: Date) {
 }
 
 export function useDashboardStats() {
-  const [stats, setStats] = useState({ totalSchools: 0, totalStudents: 0, visitsToday: 0, upcomingVisits: 0 });
+  const [stats, setStats] = useState({
+    totalSchools: 0,
+    totalStudents: 0,
+    visitsToday: 0,
+    upcomingVisits: 0,
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const q = query(collection(db, 'requests'), where('status', '==', 'approved'));
+    const q = query(
+      collection(db, "requests"),
+      where("status", "==", "approved"),
+    );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       let totalSchools = 0;
       let totalStudents = 0;
@@ -109,9 +220,9 @@ export function useDashboardStats() {
       const today = new Date();
       const in7Days = addDays(today, 7);
 
-      snapshot.docs.forEach(docSnap => {
+      snapshot.docs.forEach((docSnap) => {
         const data = docSnap.data() as VisitRequest;
-        
+
         if (data.confirmedDate) {
           const confDate = data.confirmedDate.toDate();
           const todayStart = startOfDay(new Date());
@@ -129,11 +240,11 @@ export function useDashboardStats() {
           }
         }
       });
-      setStats({ totalSchools, totalStudents, visitsToday, upcomingVisits });
+      setStats({totalSchools, totalStudents, visitsToday, upcomingVisits});
       setLoading(false);
     });
     return () => unsubscribe();
   }, []);
 
-  return { ...stats, loading };
+  return {...stats, loading};
 }
