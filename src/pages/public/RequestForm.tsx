@@ -33,13 +33,13 @@ export const RequestForm = () => {
   const selectedDate = watch("preferredDate");
   const computeTimeBounds = (dateStr?: string) => {
     try {
-      if (!dateStr) return {min: "09:00", max: "16:00"};
+      if (!dateStr) return {min: "09:00", max: "17:00"};
       const d = parseISO(dateStr);
       const day = getDay(d); // 0 Sun .. 6 Sat
-      if (day === 0 || day === 6) return {min: "10:00", max: "17:30"};
-      return {min: "09:00", max: "16:00"};
+      if (day === 0 || day === 6) return {min: "10:00", max: "18:00"};
+      return {min: "09:00", max: "17:00"};
     } catch (e) {
-      return {min: "09:00", max: "16:00"};
+      return {min: "09:00", max: "17:00"};
     }
   };
   const timeBounds = computeTimeBounds(selectedDate);

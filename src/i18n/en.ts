@@ -26,8 +26,7 @@ export const en = {
   "form.error.pastDate": "Date cannot be in the past",
   "form.error.closedMonday": "We are closed on Mondays",
   "form.error.invalidTime": "Please choose a time within working hours",
-  "form.timeInfo":
-    "Working hours — Tue–Fri: 09:00–16:00; Sat–Sun: 10:00–17:30",
+  "form.timeInfo": "Working hours — Tue–Fri: 09:00–17:00; Sat–Sun: 10:00–18:00",
   "form.error.phoneRequired": "Phone Number is required",
   "form.error.dateRequired": "Preferred Date is required",
   "form.error.tooShort": "Value is too short",

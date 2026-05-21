@@ -25,7 +25,7 @@ export const ar = {
   "form.error.closedMonday": "نحن مغلقون يوم الاثنين",
   "form.error.invalidTime": "يرجى اختيار وقت ضمن ساعات العمل",
   "form.timeInfo":
-    "ساعات العمل — الثلاثاء–الجمعة: 09:00–16:00؛ السبت–الأحد: 10:00–17:30",
+    "ساعات العمل — الثلاثاء–الجمعة: 09:00–17:00؛ السبت–الأحد: 10:00–18:00",
   "form.error.schoolRequired": "اسم المدرسة مطلوب",
   "form.error.contactRequired": "الشخص المسؤول مطلوب",
   "form.error.phoneRequired": "رقم الهاتف مطلوب",

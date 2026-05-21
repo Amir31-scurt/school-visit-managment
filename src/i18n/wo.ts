@@ -23,7 +23,7 @@ export const wo = {
   "form.error.pastDate": "Bes bi mënul a weesu",
   "form.error.closedMonday": "Nuy amul ci altine",
   "form.error.invalidTime": "Su nu soppeeku, bind waxtu bi ci saa yu ñaw",
-  "form.timeInfo": "Waxtu yi : 09:00–16:00; Sam–Dim: 10:00–17:30",
+  "form.timeInfo": "Waxtu yi : 09:00–17:00; Sam–Dim: 10:00–18:00",
   "form.error.schoolRequired": "Touru ekool bi dafa war",
   "form.error.contactRequired": "Touru Ki nuy jokkalanteel dafa war",
   "form.error.phoneRequired": "Nimero telefon bi dafa war",

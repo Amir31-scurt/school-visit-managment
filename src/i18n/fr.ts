@@ -27,7 +27,7 @@ export const fr = {
   "form.error.invalidTime":
     "Veuillez choisir une heure dans les heures d'ouverture",
   "form.timeInfo":
-    "Heures d'ouverture — Mar–Ven: 09:00–16:00; Sam–Dim: 10:00–17:30",
+    "Heures d'ouverture — Mar–Ven: 09:00–17:00; Sam–Dim: 10:00–18:00",
   "form.error.contactRequired": "La personne de contact est requise",
   "form.error.phoneRequired": "Le numéro de téléphone est requis",
   "form.error.dateRequired": "La date préférée est requise",
