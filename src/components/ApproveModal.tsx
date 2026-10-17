@@ -71,7 +71,7 @@ export const ApproveModal = ({isOpen, onClose, request}: Props) => {
         contactPerson: request.contactPerson,
         schoolName: request.schoolName,
         confirmedDate: dateStr
-          ? dateFnsFormat(new Date(dateStr), "PPP", {locale: dateLocales[lang]})
+          ? dateFnsFormat(new Date(dateStr + "T00:00:00"), "PPP", {locale: dateLocales[lang]})
           : "",
         confirmedTime: timeStr,
         numberOfStudents: watch("numberOfStudents") || request.numberOfStudents,
@@ -107,7 +107,7 @@ export const ApproveModal = ({isOpen, onClose, request}: Props) => {
     action: "whatsapp" | "email" | "both" | "just_approve",
   ) => {
     try {
-      const confirmedDate = new Date(data.confirmedDate);
+      const confirmedDate = new Date(data.confirmedDate + "T00:00:00");
       await approveRequest(
         request.id,
         confirmedDate,

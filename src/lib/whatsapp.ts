@@ -1,5 +1,6 @@
 export function buildWhatsAppLink(phone: string, message: string): string {
-  const clean = phone.replace(/[\s\-\(\)\+]/g, '');
+  // Strip everything except digits and leading +, then remove the + since wa.me uses digits only
+  const clean = phone.replace(/[^\d+]/g, '').replace(/^\+/, '');
   return `https://wa.me/${clean}?text=${encodeURIComponent(message)}`;
 }
 

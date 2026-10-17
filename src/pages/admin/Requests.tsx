@@ -166,12 +166,14 @@ export const Requests = () => {
                     <StatusBadge status={r.status} />
                   </td>
                   <td className="px-6 py-4 text-end space-x-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setApproveModalReq(r)}>
-                      {t("admin.view" as any) as string}
-                    </Button>
+                    {r.status !== "pending" && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setApproveModalReq(r)}>
+                        {t("admin.view" as any) as string}
+                      </Button>
+                    )}
                     {r.status === "pending" && (
                       <>
                         <Button size="sm" onClick={() => setApproveModalReq(r)}>
