@@ -32,6 +32,7 @@ export const ar = {
   "form.error.dateRequired": "التاريخ المفضل مطلوب",
   "form.error.tooShort": "القيمة قصيرة جداً",
   "form.error.invalidPhone": "تنسيق رقم الهاتف غير صالح",
+  "form.error.duplicate24h": "لقد قمت بالفعل بتقديم طلب لهذا التاريخ خلال الـ 24 ساعة الماضية. يرجى الانتظار أو اختيار تاريخ آخر.",
   "status.pending": "قيد الانتظار",
   "status.approved": "موافق عليه",
   "status.rejected": "مرفوض",

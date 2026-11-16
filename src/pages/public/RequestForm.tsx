@@ -9,12 +9,14 @@ import { Input } from '../../components/ui/Input';
 import { Select } from '../../components/ui/Select';
 import logo from '../../assets/logo.png';
 import toast from 'react-hot-toast';
-import { CheckCircle2, Info, Calendar, Building2, MessageSquareText, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Info, Calendar, Building2, MessageSquareText, ArrowRight, AlertCircle } from 'lucide-react';
+import { hasRecentRequest, recordRecentRequest } from '../../lib/requestCooldown';
 
 export const RequestForm = () => {
   const { t, lang } = useTranslation();
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [duplicateError, setDuplicateError] = useState<string | null>(null);
   const todayISO = new Date().toISOString().split('T')[0];
 
   const {
@@ -44,7 +46,12 @@ export const RequestForm = () => {
   }, [lang, clearErrors]);
 
   const selectedDate = watch('preferredDate');
+  const phoneValue = watch('phone');
   const notesValue = watch('notes') || '';
+
+  useEffect(() => {
+    setDuplicateError(null);
+  }, [selectedDate, phoneValue, lang]);
 
   const computeTimeBounds = (dateStr?: string) => {
     try {
@@ -76,6 +83,14 @@ export const RequestForm = () => {
       }
     }
 
+    if (hasRecentRequest(formattedPhone, data.preferredDate)) {
+      const msg = t('form.error.duplicate24h' as any) as string;
+      setDuplicateError(msg);
+      toast.error(msg);
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       await submitPublicRequest({
         ...data,
@@ -83,6 +98,8 @@ export const RequestForm = () => {
         numberOfStudents: Number(data.numberOfStudents),
         preferredDate: new Date(data.preferredDate),
       });
+      recordRecentRequest(formattedPhone, data.preferredDate);
+      setDuplicateError(null);
       setIsSuccess(true);
       reset();
     } catch (error) {
@@ -329,6 +346,16 @@ export const RequestForm = () => {
             <Info size={18} className="text-emerald-700 shrink-0 mt-0.5" aria-hidden="true" />
             <p className="leading-relaxed">{t('form.notice' as any) as string}</p>
           </div>
+
+          {duplicateError && (
+            <div
+              role="alert"
+              className="bg-red-50 border border-red-200 text-red-900 px-4 py-3.5 rounded-[var(--radius-sm)] flex items-start gap-3 text-sm"
+            >
+              <AlertCircle size={18} className="text-red-600 shrink-0 mt-0.5" aria-hidden="true" />
+              <p className="leading-relaxed font-medium">{duplicateError}</p>
+            </div>
+          )}
 
           <Button
             type="submit"

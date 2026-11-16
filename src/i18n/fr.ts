@@ -33,6 +33,7 @@ export const fr = {
   "form.error.dateRequired": "La date préférée est requise",
   "form.error.tooShort": "La valeur est trop courte",
   "form.error.invalidPhone": "Format de numéro de téléphone invalide",
+  "form.error.duplicate24h": "Vous avez déjà soumis une demande pour cette date au cours des dernières 24 heures. Veuillez patienter ou choisir une autre date.",
   "status.pending": "En attente",
   "status.approved": "Approuvée",
   "status.rejected": "Rejetée",

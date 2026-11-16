@@ -30,6 +30,7 @@ export const wo = {
   "form.error.dateRequired": "Bes bi nga beug dafa war",
   "form.error.tooShort": "Dafa gatt lool",
   "form.error.invalidPhone": "Nimero telefon bi baxul",
+  "form.error.duplicate24h": "Yone nga ba noppi benn sakkou ngir bes bi ci 24 waxtu yi weesu. Xaaral walla nga tann beneen bes.",
   "status.pending": "Muné nekk",
   "status.approved": "Nangu nanu ko",
   "status.rejected": "Nangu wunu ko",

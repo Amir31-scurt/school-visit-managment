@@ -31,6 +31,7 @@ export const en = {
   "form.error.dateRequired": "Preferred Date is required",
   "form.error.tooShort": "Value is too short",
   "form.error.invalidPhone": "Invalid phone number format",
+  "form.error.duplicate24h": "You have already submitted a request for this date within the last 24 hours. Please wait or choose another date.",
   "status.pending": "Pending",
   "status.approved": "Approved",
   "status.rejected": "Rejected",
