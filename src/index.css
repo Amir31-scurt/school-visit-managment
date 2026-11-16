@@ -1,49 +1,96 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --color-primary: 5 122 85; /* Emerald 700 */
-    --color-primary-light: 16 185 129; /* Emerald 500 */
-    --color-accent: 243 156 18; /* #F39C12 */
-    --color-success: 39 174 96; /* #27AE60 */
-    --color-warning: 241 196 15; /* #F1C40F */
-    --color-danger: 231 76 60; /* #E74C3C */
-    --color-bg: 245 247 250; /* #F5F7FA */
-    --color-surface: 255 255 255; /* #FFFFFF */
-    --color-text: 26 26 46; /* #1A1A2E */
-    --color-text-muted: 127 140 141; /* #7F8C8D */
-    --color-border: 232 236 240; /* #E8ECF0 */
-    --sidebar-width: 260px;
+    /* Core Museum Palette — Warm Ivory + Deep Botanical Emerald + Ochre Accent */
+    --color-primary: 6 95 70;           /* #065F46 - Deep Museum Emerald */
+    --color-primary-hover: 4 120 87;    /* #047857 */
+    --color-primary-light: 16 185 129;  /* #10B981 */
+    --color-primary-soft: 236 253 245;  /* #ECFDF5 */
+    --color-accent: 217 119 6;          /* #D97706 - Warm Ochre */
+
+    /* Semantic */
+    --color-success: 21 128 61;         /* #15803D */
+    --color-warning: 180 83 9;          /* #B45309 */
+    --color-danger: 185 28 28;          /* #B91C1C */
+
+    /* Neutrals (Warm Stone) */
+    --color-bg: 248 247 244;            /* #F8F7F4 */
+    --color-surface: 255 255 255;       /* #FFFFFF */
+    --color-surface-muted: 243 241 236; /* #F3F1EC */
+    --color-text: 24 24 27;             /* #18181B */
+    --color-text-muted: 113 113 122;    /* #71717A */
+    --color-border: 228 225 218;        /* #E4E1DA */
+
+    /* Layout & Motion */
+    --sidebar-width: 264px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
   }
 
   body {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    @apply bg-[rgb(var(--color-bg))] text-[rgb(var(--color-text))] antialiased selection:bg-emerald-100;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    @apply bg-[rgb(var(--color-bg))] text-[rgb(var(--color-text))] antialiased selection:bg-emerald-100 selection:text-emerald-900;
   }
 
   [dir="rtl"] {
-    font-family: 'Noto Sans Arabic', sans-serif;
+    font-family: 'Noto Sans Arabic', 'Plus Jakarta Sans', sans-serif;
+  }
+
+  /* Accessible focus ring across all interactive elements */
+  :focus-visible {
+    @apply outline-none ring-2 ring-[rgb(var(--color-primary))] ring-offset-2 ring-offset-[rgb(var(--color-surface))];
   }
 }
 
 @layer components {
   .status-badge-pending {
-    @apply bg-yellow-100 text-yellow-800 border border-yellow-200;
+    @apply bg-amber-50 text-amber-800 border border-amber-200/80;
   }
   .status-badge-approved {
-    @apply bg-green-100 text-green-800 border border-green-200;
+    @apply bg-emerald-50 text-emerald-800 border border-emerald-200/80;
   }
   .status-badge-rejected {
-    @apply bg-red-100 text-red-800 border border-red-200;
+    @apply bg-red-50 text-red-800 border border-red-200/80;
   }
 
   /* Date/Time picker indicator styling */
   input[type="date"]::-webkit-calendar-picker-indicator,
   input[type="time"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
-    filter: invert(0.4);
+    opacity: 0.6;
+    transition: opacity 150ms ease;
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator:hover,
+  input[type="time"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+}
+
+@keyframes modalIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-modal-in {
+  animation: modalIn 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-modal-in {
+    animation: none;
+  }
+  * {
+    transition-duration: 0.01ms !important;
   }
 }

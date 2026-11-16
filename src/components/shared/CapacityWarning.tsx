@@ -11,13 +11,15 @@ export const CapacityWarning = ({ currentSchools, currentStudents, maxSchools, m
   if (currentSchools < maxSchools && currentStudents < maxStudents) return null;
 
   return (
-    <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded-lg flex items-start gap-3 my-4">
-      <AlertTriangle className="mt-0.5 shrink-0" size={20} />
-      <div>
-        <h4 className="font-semibold text-sm">Capacity Warning</h4>
-        <p className="text-sm mt-1">
-          This day already has {currentSchools} schools and {currentStudents} students booked.
-          (Max: {maxSchools} schools / {maxStudents} students)
+    <div
+      role="alert"
+      className="bg-amber-50 border border-amber-200 text-amber-900 px-3.5 py-3 rounded-[var(--radius-sm)] flex items-start gap-3"
+    >
+      <AlertTriangle className="mt-0.5 shrink-0 text-amber-600" size={18} aria-hidden="true" />
+      <div className="text-xs sm:text-sm leading-relaxed">
+        <p className="font-semibold">Capacity threshold reached</p>
+        <p className="text-amber-800 mt-0.5">
+          {currentSchools}/{maxSchools} schools · {currentStudents}/{maxStudents} students already booked for this day.
         </p>
       </div>
     </div>
